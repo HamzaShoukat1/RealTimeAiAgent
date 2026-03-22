@@ -41,9 +41,9 @@ The hard and edge cases are where you'll see the biggest gains in the second hal
 
 ### Manual vs automated
 
-In this lesson the scoring is **manual**. You run the eval, open the results file, and assign each one a score from 1 to 5 by hand. This is intentional. Looking at raw outputs trains your intuition for what good looks like before you try to automate it.
+In this lesson we set up the harness and **conceptually** establish manual scoring. The way you'd manually score a result is to open the JSON file, read each entry, and assign a score from 1 to 5 along with notes about what worked and what did not. We will not actually do this as a class exercise, because reading raw JSON and editing it by hand is painful and there is no good way to compare runs.
 
-In the next lesson you'll write **automated scorers** (code based and LLM as judge). The manual scores become the ground truth those scorers are validated against.
+That pain is the point. **In the next lesson we adopt a real eval framework (Evalite) that gives us a dashboard, automated scorers, and run comparison out of the box.** But before we get there, you need to understand what an eval *is* — the dataset, the run loop, the scoring rubric — so the framework's API maps to concepts you already know.
 
 ### Pass at k vs pass to the power of k
 
@@ -61,9 +61,9 @@ We won't compute these in this lesson (single run per test case for the baseline
 
 A good eval suite has both. Capability evals tell you when you've improved. Regression evals tell you when you've broken something.
 
-## Manual Scoring Rubric
+## A Scoring Rubric
 
-When you open the results file, score each entry from 1 to 5:
+A good eval needs a clear rubric so different reviewers (or different LLM judges) score the same way. Here is a 1-5 rubric we will use in this course. We will reference it in lesson 5 when we wire up scorers.
 
 | Score | Meaning |
 |-------|---------|
@@ -73,7 +73,7 @@ When you open the results file, score each entry from 1 to 5:
 | **2** | Poor. Recognizable as an attempt but with major problems. Mostly wrong shapes, broken layout, or missing key elements. |
 | **1** | Failed. Empty result, error, or completely wrong (drew a flowchart when asked for an org chart). |
 
-Add notes explaining why you gave the score. Future you will thank present you when comparing against a Day 2 run.
+Once you have a rubric, anyone (or anything) scoring the agent's output applies the same criteria. Without one, scores drift and runs aren't comparable.
 
 ## Building the Eval Harness
 
@@ -118,9 +118,11 @@ export interface ScoredResult extends EvalResult {
 }
 ```
 
-### `evals/datasets/golden.json` (new file)
+### `evals/datasets/golden.json` (already in this branch)
 
-The golden dataset. Here is a sample test case (the full file has 18):
+**The golden dataset is pre populated for you.** When you check out the `lesson-4` branch, the file already exists at `evals/datasets/golden.json` with 18 test cases (6 simple, 5 medium, 5 hard, 3 edge). We did not want to spend the live coding session typing out 200 lines of JSON. Open the file in your editor and read through the test cases to see how they are structured.
+
+Here is one simple and one hard test case as a reference:
 
 ```json
 [
@@ -154,7 +156,7 @@ The golden dataset. Here is a sample test case (the full file has 18):
 ]
 ```
 
-The full file has 6 simple, 5 medium, 5 hard, and 3 edge cases. See the lesson 4 solution branch for the complete dataset.
+The full file has 6 simple, 5 medium, 5 hard, and 3 edge cases. Take 2-3 minutes to skim through it and notice the difficulty progression.
 
 ### Extract the system prompt
 
@@ -372,23 +374,32 @@ Empty results (no elements): 1
 Average duration: 4203ms
 ```
 
-Then **open the JSON file** and score each result. Add a `score` (1-5) and `notes` field to each entry. This is your baseline.
+Open the timestamped file in your editor and skim a few entries. You will see the input prompt, the model's response text, the array of elements it generated, and how long it took. **This is what raw eval data looks like.**
 
-## Reviewing Your Results
+## The Pain of Manual Scoring
 
-Open `evals/results/<timestamp>.json` in your editor. For each result:
+Imagine the workflow: open this JSON file, read each of the 18 entries, mentally render each diagram, compare against expected characteristics, type a score 1-5 into the file, type notes explaining the score, save. Then run the eval again next week. Now you have two timestamped JSON files. To compare them, you... open both side by side and squint at the numbers.
 
-1. Read the input
-2. Look at the `response` text and `elements` array
-3. Mentally render the diagram (or paste the elements into the running app to see them)
-4. Compare against the test case's `expectedCharacteristics`
-5. Assign a score 1-5 based on the rubric above
-6. Add notes about what was good or bad
+This is exactly how AI engineering works without tooling. It is also exactly why **nobody actually does it this way in production**.
 
-Save the file. This is your **baseline**.
+The discipline matters: golden datasets, scoring rubrics, baselines, comparison. The mechanism (editing JSON by hand) does not. We need:
 
-You'll come back to this baseline at the end of every Day 2 lesson and compare new scores against it. The goal of every improvement lesson is to make these numbers go up, especially on the hard and edge cases.
+- A UI that shows runs side by side
+- A way to render the agent's output visually instead of squinting at element arrays
+- Automated scorers that handle the cases a code check can decide
+- An LLM as judge for the cases a human would have to look at
+- Score history so we can see trends across runs
+
+In the next lesson we get all of that. We migrate this custom harness to **[Evalite](https://www.evalite.dev/)**, a TypeScript native eval framework with a built in dashboard. The discipline you learned in this lesson maps directly onto Evalite's API:
+
+- Our `for` loop over test cases → `evalite()` blocks
+- Our golden dataset JSON → Evalite's `data` array (we keep using the same file)
+- Our manual scoring rubric → Evalite scorer functions
+- Our results JSON file → Evalite's dashboard
+- Comparing two runs → built in to the dashboard
+
+You needed to build the custom harness first so the framework's pieces have a meaning. Now you are ready to use a real one.
 
 ## What is Next
 
-In the next lesson you'll automate the scoring. You'll write code based scorers that check things like "did the JSON parse?", "does the response contain the right element types?", and an LLM as judge scorer that evaluates diagram quality. Together with the manual scores from this lesson, you'll have a real eval pipeline.
+In the next lesson you migrate this harness to Evalite and add real scorers: code based checks (does the output have the right element types?) and an LLM as judge scorer (using a model to evaluate the diagram against the expected characteristics). You also get a dashboard for free. By the end of lesson 5 you will have your first real automated baseline.
