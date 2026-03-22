@@ -62,6 +62,22 @@ const status =
   : "running";
 ```
 
+## A Fresh Session Per Page Load
+
+There is one subtle issue with the chat agent. The `AIChatAgent` base class persists chat history in the Durable Object's SQLite storage. That is great for resilience, but our **canvas state lives only in the browser**. If the user refreshes the page, the canvas resets but the chat history is still there. They get a dead conversation that references diagrams that no longer exist.
+
+The fix is to give each page load its own agent instance. The Agents SDK routes requests based on the URL pattern `/agents/{agent-name}/{instance-name}`. We pass a unique `name` to `useAgent`, which routes to a fresh Durable Object with no history:
+
+```tsx
+const sessionId = crypto.randomUUID();
+// ... inside the component ...
+const agent = useAgent({ agent: "design-agent", name: sessionId });
+```
+
+We declare `sessionId` at the **module level** (not inside the component) so it stays stable across React StrictMode's double mount. If you generated the UUID with `useState` or `useMemo`, StrictMode would generate two different IDs and create two competing connections.
+
+Each page load gets a unique session. The browser canvas and the chat history stay in sync. Restoring canvas state from chat history is something we could add later, but it is not the focus of this lesson.
+
 ## Canvas Integration
 
 When a `tool-generateDiagram` part reaches the `output-available` state, its `output` field contains the elements the model generated. We need to apply them to the Excalidraw canvas via the API ref we set up in lesson 1.
@@ -264,6 +280,12 @@ import Canvas from "./components/Canvas";
 import ChatPanel from "./components/chat/ChatPanel";
 import "./App.css";
 
+// One agent instance per page load. The canvas state lives only in the
+// browser, so persisting chat history across refreshes would leave a dead
+// conversation referencing diagrams that no longer exist. Generated at the
+// module level so React StrictMode's double mount doesn't change it.
+const sessionId = crypto.randomUUID();
+
 export default function App() {
   const [excalidrawAPI, setExcalidrawAPI] =
     useState<ExcalidrawImperativeAPI | null>(null);
@@ -277,8 +299,8 @@ export default function App() {
     setExcalidrawAPI(api);
   }, []);
 
-  // Connect to the agent Durable Object
-  const agent = useAgent({ agent: "design-agent" });
+  // Connect to a fresh agent instance for this page load
+  const agent = useAgent({ agent: "design-agent", name: sessionId });
 
   // useAgentChat manages the chat protocol on top of the agent connection.
   // It gives us the messages array, a sendMessage function, and a status.
