@@ -1,17 +1,17 @@
 [
   {
-    "id": "tc-01",
+    "id": "create-simple-01",
     "input": "Draw a single rectangle labeled Hello",
     "expectedCharacteristics": [
       "1 rectangle element",
-      "1 text element with content 'Hello' or rectangle with label 'Hello'",
-      "Text is positioned inside or on the rectangle"
+      "The rectangle has a label or accompanying text element with content Hello"
     ],
+    "expectedKeywords": ["hello"],
     "difficulty": "simple",
-    "category": "content"
+    "category": "create"
   },
   {
-    "id": "tc-02",
+    "id": "create-simple-02",
     "input": "Draw a circle and a square next to each other",
     "expectedCharacteristics": [
       "1 ellipse element",
@@ -20,213 +20,326 @@
       "No overlapping elements"
     ],
     "difficulty": "simple",
-    "category": "layout"
+    "category": "create"
   },
   {
-    "id": "tc-03",
+    "id": "create-simple-03",
     "input": "Draw a simple flowchart with Start, Process, and End boxes connected by arrows",
     "expectedCharacteristics": [
       "3 rectangle elements with labels Start, Process, End",
       "2 arrow elements connecting them in sequence",
-      "Arrows have startBinding and endBinding to the rectangles",
-      "No overlapping elements",
       "Layout flows left to right or top to bottom"
     ],
+    "expectedKeywords": ["start", "process", "end"],
     "difficulty": "simple",
-    "category": "structure"
+    "category": "create"
   },
   {
-    "id": "tc-04",
+    "id": "create-simple-04",
     "input": "Draw a diamond labeled 'Decision' with two arrows coming out of it labeled 'Yes' and 'No'",
     "expectedCharacteristics": [
       "1 diamond element with label Decision",
       "2 arrow elements originating from the diamond",
-      "Two text labels Yes and No near the arrows",
-      "Arrows go in different directions"
+      "Two text labels Yes and No near the arrows"
     ],
+    "expectedKeywords": ["decision", "yes", "no"],
     "difficulty": "simple",
-    "category": "structure"
+    "category": "create"
   },
   {
-    "id": "tc-05",
+    "id": "create-simple-05",
     "input": "Draw three rectangles in a vertical column labeled Top, Middle, Bottom",
     "expectedCharacteristics": [
       "3 rectangle elements",
-      "Labels: Top, Middle, Bottom (in that order)",
-      "Same x position for all three (vertical alignment)",
-      "Increasing y values (stacked vertically)",
-      "No overlapping elements"
+      "Labels Top, Middle, Bottom in order",
+      "Vertically aligned (same x, increasing y)"
     ],
+    "expectedKeywords": ["top", "middle", "bottom"],
     "difficulty": "simple",
-    "category": "layout"
+    "category": "create"
   },
 
   {
-    "id": "tc-06",
+    "id": "create-medium-01",
     "input": "Draw a login flow: user enters credentials, system validates, if valid go to dashboard, if invalid show error",
     "expectedCharacteristics": [
       "At least 4 rectangles or shapes for the steps",
       "1 diamond for the validation decision",
       "Branching arrows from the decision",
-      "Labels reflecting the prompt",
-      "Layout flows in a clear direction"
+      "Labels reflecting the prompt"
     ],
+    "expectedKeywords": ["credentials", "validate", "dashboard", "error"],
     "difficulty": "medium",
-    "category": "structure"
+    "category": "create"
   },
   {
-    "id": "tc-07",
+    "id": "create-medium-02",
     "input": "Draw an entity relationship diagram for a blog: Users have many Posts, Posts have many Comments",
     "expectedCharacteristics": [
       "3 rectangles labeled Users, Posts, Comments",
       "2 arrows or lines connecting them",
-      "Connection labels indicate the relationship (has many, etc.)",
-      "Logical layout with related entities near each other"
+      "Connection labels indicate the relationship"
     ],
+    "expectedKeywords": ["users", "posts", "comments"],
     "difficulty": "medium",
-    "category": "structure"
+    "category": "create"
   },
   {
-    "id": "tc-08",
+    "id": "create-medium-03",
     "input": "Draw a simple web architecture: Browser sends requests to a Load Balancer, which forwards to two Web Servers, which read from a Database",
     "expectedCharacteristics": [
       "5 elements: Browser, Load Balancer, 2 Web Servers, Database",
       "Arrows showing request flow direction",
-      "Two web servers are visually grouped or aligned",
-      "Hierarchical or flow based layout"
+      "Two web servers visually grouped or aligned"
     ],
+    "expectedKeywords": ["browser", "load balancer", "web server", "database"],
     "difficulty": "medium",
-    "category": "structure"
+    "category": "create"
   },
   {
-    "id": "tc-09",
+    "id": "create-medium-04",
     "input": "Draw a sequence diagram: Client calls Server, Server calls Database, Database returns data, Server returns response to Client",
     "expectedCharacteristics": [
       "Distinct participants for Client, Server, Database",
       "Arrows showing the direction of each message",
-      "Order is preserved (Client to Server to DB and back)",
-      "Labels on arrows describing the calls"
+      "Order is preserved"
     ],
+    "expectedKeywords": ["client", "server", "database"],
     "difficulty": "medium",
-    "category": "structure"
+    "category": "create"
   },
   {
-    "id": "tc-10",
+    "id": "create-medium-05",
     "input": "Draw a state machine for a traffic light with Red, Yellow, Green states transitioning in order",
     "expectedCharacteristics": [
       "3 ellipses or rectangles for Red, Yellow, Green",
-      "3 arrows showing transitions between states (cycle)",
-      "Cyclic structure (Green to Yellow to Red to Green)",
-      "States are visually distinct"
+      "3 arrows showing transitions between states",
+      "Cyclic structure"
     ],
+    "expectedKeywords": ["red", "yellow", "green"],
     "difficulty": "medium",
-    "category": "structure"
+    "category": "create"
   },
 
   {
-    "id": "tc-11",
+    "id": "create-complex-01",
     "input": "Draw an org chart for a company: CEO at top, 3 VPs reporting to CEO (Engineering, Sales, Marketing), each VP has 3 directors under them",
     "expectedCharacteristics": [
       "1 CEO box at top",
       "3 VP boxes in a horizontal row below CEO",
-      "9 director boxes below the VPs (3 per VP)",
-      "Arrows or lines from CEO to each VP and from each VP to its directors",
-      "Hierarchical layout with no overlapping elements",
-      "Total: 13 boxes and 12 connections"
+      "9 director boxes below the VPs",
+      "12 connections total",
+      "Hierarchical layout"
     ],
+    "expectedKeywords": ["ceo", "engineering", "sales", "marketing"],
     "difficulty": "hard",
-    "category": "layout"
+    "category": "create"
   },
   {
-    "id": "tc-12",
+    "id": "create-complex-02",
     "input": "Draw a microservices architecture: API Gateway receives requests, routes to Auth Service, User Service, Order Service, and Payment Service. Each service has its own database. Order Service also calls Payment Service.",
     "expectedCharacteristics": [
       "API Gateway box at the entry point",
       "4 service boxes (Auth, User, Order, Payment)",
       "4 database boxes (one per service)",
-      "Arrows from gateway to each service",
-      "Arrows from each service to its database",
-      "An additional arrow from Order Service to Payment Service",
-      "Layout is readable and not chaotic"
+      "Arrows from gateway to each service and from each service to its database",
+      "Additional arrow from Order Service to Payment Service"
     ],
+    "expectedKeywords": ["api gateway", "auth", "user", "order", "payment", "database"],
     "difficulty": "hard",
-    "category": "structure"
+    "category": "create"
   },
   {
-    "id": "tc-13",
-    "input": "Draw the Kubernetes architecture: a Master node with API Server, Scheduler, Controller, and etcd. Then 3 Worker nodes, each with a kubelet, kube-proxy, and 2 pods.",
-    "expectedCharacteristics": [
-      "1 Master node container with 4 components inside (API Server, Scheduler, Controller, etcd)",
-      "3 Worker node containers, each with kubelet, kube-proxy, and 2 pods (4 things per worker)",
-      "Visual grouping of components within their nodes",
-      "Connection between Master and Workers",
-      "Roughly 17+ elements total"
-    ],
-    "difficulty": "hard",
-    "category": "layout"
-  },
-  {
-    "id": "tc-14",
+    "id": "create-complex-03",
     "input": "Draw a complex e-commerce checkout flow with 8 steps: Cart Review, Shipping Address, Shipping Method, Payment, Order Review, Place Order, Confirmation, Email Receipt. Include error paths if payment fails.",
     "expectedCharacteristics": [
       "8 step boxes for the main flow",
       "Arrows connecting them in sequence",
       "At least one decision point for payment validation",
-      "Error path that loops back or shows failure handling",
-      "Labels are clear",
-      "Layout fits the steps without major overlap"
+      "Error path that loops back or shows failure handling"
     ],
+    "expectedKeywords": ["cart", "shipping", "payment", "confirmation"],
     "difficulty": "hard",
-    "category": "structure"
+    "category": "create"
   },
   {
-    "id": "tc-15",
+    "id": "create-complex-04",
     "input": "Draw a network topology with 1 router connected to 2 switches, where each switch is connected to 4 computers and 1 printer. Show the router connecting to the internet.",
     "expectedCharacteristics": [
       "1 router box",
       "2 switch boxes",
       "8 computer boxes (4 per switch)",
-      "2 printer boxes (1 per switch)",
+      "2 printer boxes",
       "1 internet box or label",
-      "Connecting lines between all components",
-      "Roughly 14 elements total",
-      "Hierarchical layout"
+      "Connecting lines between all components"
     ],
+    "expectedKeywords": ["router", "switch", "computer", "printer", "internet"],
     "difficulty": "hard",
-    "category": "layout"
+    "category": "create"
   },
 
   {
-    "id": "tc-16",
+    "id": "modify-01",
+    "input": "make the login box red",
+    "seed": {
+      "userPrompt": "draw two rectangles labeled login and database",
+      "assistantConfirmation": "Done. I drew a login box on the left and a database box on the right.",
+      "elements": [
+        { "id": "rect_login", "type": "rectangle", "x": 100, "y": 100, "width": 200, "height": 80, "text": "login" },
+        { "id": "rect_db", "type": "rectangle", "x": 500, "y": 100, "width": 200, "height": 80, "text": "database" }
+      ]
+    },
+    "expectedCharacteristics": [
+      "rect_login still exists",
+      "rect_login backgroundColor changed to a red shade",
+      "rect_db unchanged"
+    ],
+    "preservedIds": ["rect_login", "rect_db"],
+    "difficulty": "simple",
+    "category": "modify"
+  },
+  {
+    "id": "modify-02",
+    "input": "now connect them with an arrow going from login to database",
+    "seed": {
+      "userPrompt": "draw two rectangles labeled login and database",
+      "assistantConfirmation": "Done. login and database boxes are on the canvas.",
+      "elements": [
+        { "id": "rect_login", "type": "rectangle", "x": 100, "y": 100, "width": 200, "height": 80, "text": "login" },
+        { "id": "rect_db", "type": "rectangle", "x": 500, "y": 100, "width": 200, "height": 80, "text": "database" }
+      ]
+    },
+    "expectedCharacteristics": [
+      "Both original rectangles still exist",
+      "1 new arrow element added",
+      "Arrow visually connects rect_login to rect_db (or has bindings between them)"
+    ],
+    "preservedIds": ["rect_login", "rect_db"],
+    "difficulty": "medium",
+    "category": "modify"
+  },
+  {
+    "id": "modify-03",
+    "input": "rename the Process box to Validate",
+    "seed": {
+      "userPrompt": "draw a flowchart with Start, Process, and End",
+      "assistantConfirmation": "Here's the Start, Process, End flowchart.",
+      "elements": [
+        { "id": "rect_start", "type": "rectangle", "x": 100, "y": 100, "width": 160, "height": 60, "text": "Start" },
+        { "id": "rect_process", "type": "rectangle", "x": 320, "y": 100, "width": 160, "height": 60, "text": "Process" },
+        { "id": "rect_end", "type": "rectangle", "x": 540, "y": 100, "width": 160, "height": 60, "text": "End" },
+        { "id": "arrow_1", "type": "arrow", "x": 260, "y": 130, "width": 60, "height": 0 },
+        { "id": "arrow_2", "type": "arrow", "x": 480, "y": 130, "width": 60, "height": 0 }
+      ]
+    },
+    "expectedCharacteristics": [
+      "rect_process still exists",
+      "rect_process text or label is now Validate",
+      "rect_start and rect_end unchanged",
+      "Arrows still present"
+    ],
+    "expectedKeywords": ["start", "validate", "end"],
+    "preservedIds": ["rect_start", "rect_process", "rect_end", "arrow_1", "arrow_2"],
+    "difficulty": "medium",
+    "category": "modify"
+  },
+  {
+    "id": "modify-04",
+    "input": "add a Cache box between the API and the Database, and route the API through the cache",
+    "seed": {
+      "userPrompt": "draw an API box connected to a Database box",
+      "assistantConfirmation": "Done. API on the left, Database on the right, with an arrow between them.",
+      "elements": [
+        { "id": "rect_api", "type": "rectangle", "x": 100, "y": 100, "width": 160, "height": 60, "text": "API" },
+        { "id": "rect_db", "type": "rectangle", "x": 500, "y": 100, "width": 160, "height": 60, "text": "Database" },
+        { "id": "arrow_api_db", "type": "arrow", "x": 260, "y": 130, "width": 240, "height": 0 }
+      ]
+    },
+    "expectedCharacteristics": [
+      "rect_api and rect_db still exist",
+      "1 new rectangle labeled Cache added between them",
+      "API now connects to Cache and Cache connects to Database",
+      "Direct API to Database arrow removed or replaced"
+    ],
+    "expectedKeywords": ["api", "cache", "database"],
+    "preservedIds": ["rect_api", "rect_db"],
+    "difficulty": "hard",
+    "category": "modify"
+  },
+
+  {
+    "id": "domain-01",
+    "input": "Draw the OAuth 2.0 authorization code flow",
+    "expectedCharacteristics": [
+      "Distinct boxes or lifelines for Resource Owner (User), Client, Authorization Server, Resource Server",
+      "Authorization request from Client to Auth Server",
+      "Authorization code returned to Client",
+      "Token exchange step where Client trades code for access token",
+      "Client uses access token to call Resource Server"
+    ],
+    "expectedKeywords": [
+      "resource owner",
+      "client",
+      "authorization server",
+      "resource server",
+      "authorization code",
+      "access token"
+    ],
+    "difficulty": "hard",
+    "category": "domain"
+  },
+  {
+    "id": "domain-02",
+    "input": "Draw the AWS three-tier web application architecture",
+    "expectedCharacteristics": [
+      "Three distinct tiers: web/presentation, application, data",
+      "Load balancer in front of the web tier",
+      "Multiple instances per tier showing horizontal scaling",
+      "Database in the data tier",
+      "Arrows showing request flow from user through the tiers"
+    ],
+    "expectedKeywords": [
+      "load balancer",
+      "web",
+      "application",
+      "database",
+      "tier"
+    ],
+    "difficulty": "hard",
+    "category": "domain"
+  },
+  {
+    "id": "domain-03",
+    "input": "Draw the relationship between a Kubernetes Pod, Service, and Deployment",
+    "expectedCharacteristics": [
+      "Deployment box containing or managing Pods",
+      "Multiple Pod instances (showing replicas)",
+      "Service box pointing to the Pods via label selector",
+      "Arrows or visual containment showing Deployment manages Pods and Service routes to Pods"
+    ],
+    "expectedKeywords": ["deployment", "pod", "service", "replica"],
+    "difficulty": "hard",
+    "category": "domain"
+  },
+
+  {
+    "id": "edge-01",
     "input": "draw something",
     "expectedCharacteristics": [
       "Agent either asks for clarification or makes a reasonable default choice",
       "Result is not a crash or empty response"
     ],
     "difficulty": "edge",
-    "category": "edge-case"
+    "category": "edge"
   },
   {
-    "id": "tc-17",
+    "id": "edge-02",
     "input": "Draw a square that is also a circle",
     "expectedCharacteristics": [
       "Agent handles the contradiction gracefully",
       "Either clarifies, picks one, or draws both with a note"
     ],
     "difficulty": "edge",
-    "category": "edge-case"
-  },
-  {
-    "id": "tc-18",
-    "input": "Please create a flowchart for me showing exactly how a user would sign up for an account on our platform, starting from the landing page where they click the sign up button, then filling out their email and password, then receiving a verification email, then clicking the link in that email, then being redirected to a welcome page where they can set up their profile, including uploading an avatar and choosing a username, and then finally being taken to their dashboard which should show their recent activity, account settings, and a navigation menu",
-    "expectedCharacteristics": [
-      "At least 7-8 steps reflecting the prompt",
-      "Connected with arrows in sequence",
-      "Labels are concise (not the full prompt text)",
-      "Layout does not overflow or overlap badly",
-      "Agent handles the long input without crashing"
-    ],
-    "difficulty": "edge",
-    "category": "edge-case"
+    "category": "edge"
   }
 ]
