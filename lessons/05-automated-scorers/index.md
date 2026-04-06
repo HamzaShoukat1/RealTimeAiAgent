@@ -514,7 +514,7 @@ Why categorical instead of a slider? Humans are bad at "give this a 0.7." They'r
 
 Why four options instead of pass/fail? It gives you signal on "the agent is improving even if it's not perfect yet," which is the whole point of running evals across lessons.
 
-Once created, the score appears in every experiment row in the dashboard. Open a run, click into a row, pick an option, repeat. After scoring 23 cases (about 5 minutes) you've got a baseline `Visual Quality` number alongside the four code scorers. Re run the eval after lesson 6, score the new run, compare the deltas in the run history view.
+Once created, the score appears in every experiment row in the dashboard. Open a run, click into a row, pick an option, repeat. To actually *see* the diagram instead of squinting at element coordinates in JSON, copy the `output.elements` field from the Braintrust row and paste it into the **diagram viewer** that ships with the app: run `npm run dev`, click the small `viewer` button in the bottom left corner (or visit `http://localhost:5173/#viewer`), paste, and hit Render. A "← back to chat" link returns you to the normal app. The viewer accepts raw element arrays, `{ elements: [...] }` wrappers, or the full `{ text, elements }` task output, so you can paste whatever shape Braintrust hands you. After scoring 23 cases (about 5 minutes) you've got a baseline `Visual Quality` number alongside the four code scorers. Re run the eval after lesson 6, score the new run, compare the deltas in the run history view.
 
 You don't need to score every row of every run. A representative sample (say all the modify cases plus a couple of hard create cases) is plenty to know whether your agent got prettier.
 
