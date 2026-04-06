@@ -7,6 +7,7 @@
 
 import type { EvalScorer } from "braintrust";
 import type { AgentOutput } from "./schema";
+import type { GoldenTestCase } from "../buildMessages";
 
 const TYPE_KEYWORDS: Record<string, string[]> = {
   rectangle: ["rectangle", "rectangles", "box", "boxes"],
@@ -44,7 +45,7 @@ function countByType(elements: unknown[]): Record<string, number> {
   return counts;
 }
 
-export const structureScorer: EvalScorer<string, AgentOutput, string[]> = ({
+export const structureScorer: EvalScorer<GoldenTestCase, AgentOutput, GoldenTestCase> = ({
   output,
   expected,
 }) => {
@@ -56,7 +57,7 @@ export const structureScorer: EvalScorer<string, AgentOutput, string[]> = ({
     return { name: "Structure", score: 0.5, metadata: { reason: "no expected provided" } };
   }
 
-  const expectedCounts = parseExpectedCounts(expected);
+  const expectedCounts = parseExpectedCounts(expected.expectedCharacteristics);
   const actualCounts = countByType(output.elements);
 
   if (Object.keys(expectedCounts).length === 0) {

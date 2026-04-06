@@ -1,5 +1,6 @@
-// Diagram agent eval. Uses Braintrust's Eval() function plus autoevals scorers
-// instead of the custom harness from lesson 4.
+// Diagram agent eval. Uses Braintrust's Eval() function plus a set of
+// deterministic code scorers. The agent itself comes from src/agent-core so
+// the eval and the worker can never drift apart.
 //
 // Run with:
 //   npm run eval
@@ -10,84 +11,45 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { config } from "dotenv";
 import { Eval } from "braintrust";
-import { Factuality } from "autoevals";
-import { generateText, stepCountIs } from "ai";
 import { createOpenAI } from "@ai-sdk/openai";
 
-import { tools } from "../src/tools";
-import { SYSTEM_PROMPT } from "../src/system-prompt";
+import { runAgent } from "../src/agent-core";
+import { buildMessages, type GoldenTestCase } from "./buildMessages";
 import { schemaScorer, type AgentOutput } from "./scorers/schema";
 import { structureScorer } from "./scorers/structure";
+import { preservationScorer } from "./scorers/preservation";
+import { labelKeywordScorer } from "./scorers/labelKeyword";
 
-// Load env vars from .dev.vars (npm run eval also wraps this with dotenv-cli
-// so braintrust sees BRAINTRUST_API_KEY before it boots).
 config({ path: ".dev.vars" });
 
 const openai = createOpenAI({ apiKey: process.env.OPENAI_API_KEY });
-
-interface GoldenTestCase {
-  id: string;
-  input: string;
-  expectedCharacteristics: string[];
-  difficulty: "simple" | "medium" | "hard" | "edge";
-  category: string;
-}
 
 const testCases: GoldenTestCase[] = JSON.parse(
   readFileSync(join("evals", "datasets", "golden.json"), "utf-8")
 );
 
-Eval<string, AgentOutput, string[]>("Diagram Agent", {
-  // Map our golden dataset onto Braintrust's expected shape.
-  // Each test case has an input prompt, the expected characteristics list,
-  // and metadata so the dashboard can filter by difficulty and category.
+Eval<GoldenTestCase, AgentOutput, GoldenTestCase>("Diagram Agent", {
+  // The whole test case becomes both input and expected. The scorers pull
+  // out whichever fields they care about (preservedIds, expectedKeywords,
+  // expectedCharacteristics, seed elements, etc).
   data: () =>
     testCases.map((tc) => ({
-      input: tc.input,
-      expected: tc.expectedCharacteristics,
-      metadata: { id: tc.id, difficulty: tc.difficulty, category: tc.category },
+      input: tc,
+      expected: tc,
+      metadata: {
+        id: tc.id,
+        difficulty: tc.difficulty,
+        category: tc.category,
+      },
     })),
 
-  // The task: invoke the agent. Same generateText call the worker uses, just
-  // without the WebSocket / Durable Object wrapper.
-  task: async (input) => {
-    const result = await generateText({
+  task: async (testCase) => {
+    const result = await runAgent({
       model: openai("gpt-5.4-mini"),
-      system: SYSTEM_PROMPT,
-      prompt: input,
-      tools,
-      stopWhen: stepCountIs(5),
+      messages: buildMessages(testCase),
     });
-
-    const elements: unknown[] = [];
-    for (const step of result.steps) {
-      for (const toolResult of step.toolResults ?? []) {
-        if (toolResult.toolName === "generateDiagram") {
-          const output = toolResult.output as { elements?: unknown[] };
-          if (Array.isArray(output?.elements)) {
-            elements.push(...output.elements);
-          }
-        }
-      }
-    }
-
-    return { text: result.text, elements };
+    return { text: result.text, elements: result.elements };
   },
 
-  // Scorers run on every test case. Factuality is from autoevals (LLM judge),
-  // schema and structure are our own deterministic scorers.
-  scores: [
-    // Factuality compares the agent's text response against the expected
-    // characteristics joined as a single reference string.
-    async (args) => {
-      const expectedText = (args.expected ?? []).join(". ");
-      return Factuality({
-        input: args.input,
-        output: args.output.text,
-        expected: expectedText,
-      });
-    },
-    schemaScorer,
-    structureScorer,
-  ],
+  scores: [schemaScorer, structureScorer, preservationScorer, labelKeywordScorer],
 });

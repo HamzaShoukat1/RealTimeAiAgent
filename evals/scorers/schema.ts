@@ -7,6 +7,7 @@
 // Braintrust scorer signature: ({ input, output, expected }) => Score | number
 
 import type { EvalScorer } from "braintrust";
+import type { GoldenTestCase } from "../buildMessages";
 
 const REQUIRED_FIELDS = ["id", "type", "x", "y", "width", "height"] as const;
 const VALID_TYPES = ["rectangle", "ellipse", "diamond", "text", "arrow", "line"];
@@ -16,7 +17,7 @@ export interface AgentOutput {
   elements: unknown[];
 }
 
-export const schemaScorer: EvalScorer<string, AgentOutput, string[]> = ({
+export const schemaScorer: EvalScorer<GoldenTestCase, AgentOutput, GoldenTestCase> = ({
   output,
 }) => {
   if (!Array.isArray(output.elements)) {
