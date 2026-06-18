@@ -37,7 +37,7 @@ export default function ChatPanel({
       <form className="chat-input-form" onSubmit={handleSubmit}>
         <input
           type="text"
-          className="chat-input"
+          className="chat-input "
           placeholder="Describe a diagram..."
           value={input}
           onChange={(e) => setInput(e.target.value)}

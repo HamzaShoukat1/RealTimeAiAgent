@@ -27,7 +27,7 @@ export default function App() {
   // when messages re-render.
   const appliedToolCalls = useRef<Set<string>>(new Set());
 
-  // Hold the latest excalidrawAPI in a ref so the onToolCall callback (which
+  // Hold the latest excalidrawAPI in a ref s o the onToolCall callback (which
   // is captured once at hook init time) can always read the live API instead
   // of a stale closure copy.
   const excalidrawAPIRef = useRef<ExcalidrawImperativeAPI | null>(null);
@@ -70,9 +70,11 @@ export default function App() {
       for (const part of message.parts ?? []) {
         const type = (part as { type?: string }).type;
         if (
-          type !== "tool-addElements" &&
-          type !== "tool-updateElements" &&
-          type !== "tool-removeElements"
+          // type !== "tool-addElements" &&
+          // type !== "tool-updateElements" &&
+          // type !== "tool-removeElements"
+          type !== "tool-generateDiagram" &&
+          type !== "tool-modifyDiagram" 
         ) {
           continue;
         }
@@ -86,7 +88,7 @@ export default function App() {
         if (appliedToolCalls.current.has(p.toolCallId)) continue;
         appliedToolCalls.current.add(p.toolCallId);
 
-        if (p.type === "tool-addElements") {
+        if (p.type === "tool-generateDiagram") {
           const output = p.output as { elements?: unknown };
           const skeletons = output?.elements;
           if (Array.isArray(skeletons) && skeletons.length > 0) {
@@ -96,6 +98,7 @@ export default function App() {
             const newOnes = convertToExcalidrawElements(skeletons as never, {
               regenerateIds: false,
             });
+            console.log("tool output",p.output)
             const current = excalidrawAPI.getSceneElements();
             const next = [...current, ...newOnes];
             excalidrawAPI.updateScene({
@@ -104,7 +107,7 @@ export default function App() {
             });
             excalidrawAPI.scrollToContent(next, { fitToContent: true });
           }
-        } else if (p.type === "tool-updateElements") {
+        } else if (p.type === "tool-modifyDiagram") {
           const output = p.output as {
             updates?: { id: string; fields: Record<string, unknown> }[];
           };
@@ -120,19 +123,19 @@ export default function App() {
               elements: next,
               captureUpdate: CaptureUpdateAction.IMMEDIATELY,
             });
-          }
-        } else if (p.type === "tool-removeElements") {
-          const output = p.output as { ids?: string[] };
-          const ids = new Set(output?.ids ?? []);
-          if (ids.size > 0) {
-            const current = excalidrawAPI.getSceneElements();
-            const next = current.filter((el) => !ids.has(el.id));
-            excalidrawAPI.updateScene({
-              elements: next,
-              captureUpdate: CaptureUpdateAction.IMMEDIATELY,
-            });
-          }
-        }
+          }}
+        // } else if (p.type === "tool-removeElements") {
+        //   // const output = p.output as { ids?: string[] };
+        //   // const ids = new Set(output?.ids ?? []);
+        //   // if (ids.size > 0) {
+        //   //   const current = excalidrawAPI.getSceneElements();
+        //   //   const next = current.filter((el) => !ids.has(el.id));
+        //   //   excalidrawAPI.updateScene({
+        //   //     elements: next,
+        //   //     captureUpdate: CaptureUpdateAction.IMMEDIATELY,
+        //   //   });
+        //   // }
+        // }
       }
     }
   }, [messages, excalidrawAPI]);

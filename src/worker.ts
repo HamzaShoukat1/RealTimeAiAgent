@@ -1,11 +1,12 @@
 import { DesignAgent } from "./agent";
 import { routeAgentRequest } from "agents";
 
+
 export { DesignAgent };
 
 interface Env {
   DesignAgent: DurableObjectNamespace;
-  OPENAI_API_KEY: string;
+  GROQ_API_KEY: string;
 }
 
 export default {
@@ -16,3 +17,4 @@ export default {
     );
   },
 } satisfies ExportedHandler<Env>;
+
