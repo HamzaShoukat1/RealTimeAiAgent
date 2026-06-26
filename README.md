@@ -1,156 +1,269 @@
-# AI Engineering Fundamentals
+<div align="center">
 
-This is a companion repo for the [AI Engineering Fundamentals course on Frontend Masters](https://frontendmasters.com/courses/ai-engineering/). In this course, you build an agentic diagram design tool, then learn to evaluate and improve it using professional AI engineering practices.
+# 🎨 AI Excalidraw Design Agent
 
-You build a Cloudflare Workers agent that controls an Excalidraw canvas through tool calls. Then you measure it with evals, and across the rest of the course you systematically improve it (context engineering, better tools, RAG, generative UI, human-in-the-loop, planning, data flywheel) and watch the eval scores move.
+### Draw, Edit, and Modify Excalidraw Diagrams Using Natural Language
 
-![The diagram design tool](./assets/screenshot.png)
+Built with **Cloudflare Agents**, **Vercel AI SDK**, **React**, and **Excalidraw**
 
-## What you'll build
+<p>
+  <img src="https://img.shields.io/badge/Cloudflare-Agents-F38020?style=for-the-badge&logo=cloudflare&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Vercel-AI%20SDK-black?style=for-the-badge&logo=vercel"/>
+  <img src="https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black"/>
+  <img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Excalidraw-6965DB?style=for-the-badge"/>
+</p>
 
-A live diagramming agent that:
+---
 
-- Reads natural language requests ("draw a sequence diagram of an OAuth login")
-- Controls an Excalidraw canvas via structured tool calls (add/update/remove elements)
-- Reads the live canvas state on demand
-- Searches the web for fresh information when it needs to
-- Searches a private knowledge corpus via RAG when it needs precise reference material
-- Streams responses, shows tool status, handles approvals, and gets better at all of this as you measure it
+Transform plain English into beautiful diagrams.
 
-By the end you have a working agent and the discipline to evaluate and improve any agent you build next.
+*"Draw a login flow with a database."*
 
-## How the course is organized
+*"Make the API box green."*
 
-Each lesson is its own git branch. The branch sequence is:
+*"Remove the cache layer."*
+
+The AI understands your request and updates the Excalidraw canvas in real time.
+
+</div>
+
+---
+
+# ✨ Features
+
+- 🎨 Create diagrams from natural language
+- ✏️ Edit existing diagrams
+- 🗑 Delete diagram elements
+- 🔍 Read the current canvas before modifying
+- ⚡ Streaming AI responses
+- 🤖 Tool-calling agent architecture
+- 💬 Multi-turn conversations
+- 🧠 Preserves existing diagrams while editing
+- 📦 Built with Cloudflare Agents + AI SDK
+
+---
+
+---
+
+# 🏗 Architecture
+
+```text
+                 User
+                   │
+                   ▼
+            React Chat UI
+                   │
+                   ▼
+        Cloudflare AI Agent
+                   │
+         ┌─────────┴─────────┐
+         │                   │
+         ▼                   ▼
+   OpenAI / AI SDK       Tool Calling
+                               │
+      ┌────────────────────────┼────────────────────────┐
+      ▼                        ▼                        ▼
+ queryCanvas()          addElements()          updateElements()
+      │                        │                        │
+      └────────────────────────┼────────────────────────┘
+                               ▼
+                       Excalidraw Canvas
+```
+
+---
+
+# 🛠 Tools
+
+The AI interacts with Excalidraw exclusively through tools.
+
+| Tool | Description |
+|------|-------------|
+| `queryCanvas()` | Reads the current canvas |
+| `addElements()` | Creates new shapes |
+| `updateElements()` | Modifies existing elements |
+| `removeElements()` | Deletes elements |
+
+This keeps the model deterministic and prevents hallucinated canvas state.
+
+---
+
+# 💬 Example Prompts
 
 ```
-lesson-1 → lesson-2 → ... → lesson-9 (latest)
+Draw a red circle.
 ```
 
-Each lesson branch contains:
-
-- The solution for the previous lesson (so you can catch up if you fall behind)
-- The notes for the current lesson under `lessons/<lesson-name>/index.md`
-
-There are also two convenience branches:
-
-- **`main`** — points at the latest lesson so far. This is what you see when you land on the GitHub page.
-- **`complete`** — same as `main`, an explicit name for "everything that exists right now."
-
-So if you fall behind in lesson 5, you can `git checkout lesson-6` to grab the lesson 5 solution and pick up from there. If you want to see everything, `git checkout complete`.
-
-### Lesson notes
-
-Notes live alongside the code under `lessons/`:
-
 ```
-lessons/
-  01-intro-to-ai-engineering/
-    index.md
-  02-your-first-cloudflare-agent/
-    index.md
-  ...
+Create a system architecture for a React application.
 ```
 
-You can read them three ways:
+```
+Add a Redis cache between API and Database.
+```
 
-- **Directly on GitHub or in your editor** — they're plain markdown.
-- **In Obsidian** — open the `lessons/` directory as a vault.
-- **As a local site** — run `npm run docs` to serve them with VitePress at http://localhost:5170 so it doesn't conflict with the Drawing Application.
+```
+Move the database below the API.
+```
 
-## Setup
+```
+Change the login box to green.
+```
 
-### 1. Clone and install
+```
+Remove the cache layer.
+```
+
+```
+Connect every service using arrows.
+```
+
+---
+
+# 📂 Project Structure
+
+```text
+src/
+│
+├── components/
+│   ├── Canvas/
+│   └── Chat/
+│
+├── agent/
+│   ├── Tools/
+│   ├── prompts/
+│   ├── context/
+│   └── streamAgent.ts
+│
+├── App.tsx
+│
+└── main.tsx
+```
+
+---
+
+# 🚀 Getting Started
+
+## Clone
 
 ```bash
-git clone <this repo url>
-cd intro-ai-engineering
+git clone https://github.com/yourusername/excalidraw-ai-agent.git
+```
+
+---
+
+## Install
+
+```bash
 npm install
 ```
 
-### 2. Create accounts
+---
 
-You need accounts at four services. Three are free with no credit card. One needs a credit card but the costs for this course are pennies.
+## Environment Variables
 
-| Service | Why | Cost | Credit card required? |
-|---|---|---|---|
-| **OpenAI** | LLM provider for the agent | A few cents for the whole course | **Yes** |
-| **Upstash Vector** | Vector store for RAG (lesson 8) | Free tier, very generous | No |
-| **Braintrust** | Eval platform (lessons 4+) | Free tier | No |
-| **Tavily** | Web search API for the agent's `searchWeb` tool (lesson 7) | Free tier, 1000 searches/month | No |
+Create a `.env` file.
 
-#### OpenAI
-
-1. Sign up at [platform.openai.com](https://platform.openai.com).
-2. Add a payment method. The course costs pennies but OpenAI requires a card on file before issuing API keys.
-3. Create an API key under **API keys**. Save it for the next step.
-
-#### Upstash Vector
-
-1. Sign up at [upstash.com](https://upstash.com). No credit card needed.
-2. Go to **Vector** in the console and click **Create Index**.
-3. Pick any embedding model from the dropdown — `mixedbread-ai/mxbai-embed-large-v1` is a good default. The model is hosted by Upstash, which is what lets the embed script and the agent skip the embedding step entirely.
-4. Pick a region close to you. Free tier is fine.
-5. After creation, the index page shows `UPSTASH_VECTOR_REST_URL` and `UPSTASH_VECTOR_REST_TOKEN`. Save both.
-
-#### Braintrust
-
-1. Sign up at [braintrust.dev](https://braintrust.dev). No credit card needed.
-2. Create an API key from settings. Save it.
-
-#### Tavily
-
-1. Sign up at [tavily.com](https://tavily.com). No credit card needed.
-2. Get your API key from the dashboard. Save it.
-
-### 3. Configure environment variables
-
-Create `.dev.vars` at the project root:
-
-```
-OPENAI_API_KEY=sk-...
-UPSTASH_VECTOR_REST_URL=https://...upstash.io
-UPSTASH_VECTOR_REST_TOKEN=...
-BRAINTRUST_API_KEY=sk-...
-TAVILY_API_KEY=tvly-...
+```env
+OPENAI_API_KEY=your_key
 ```
 
-The Worker reads from this file via `wrangler dev` automatically. Node scripts (`npm run embed`, `npm run eval`) read it via `dotenv-cli`.
+If using Cloudflare:
 
-### 4. Run things
+```env
+CLOUDFLARE_API_TOKEN=...
+```
+
+---
+
+## Start Development
 
 ```bash
-npm run dev      # start the app at http://localhost:5173 (or 5174/5175 if 5173 is taken)
-npm run docs     # serve the lesson notes locally
-npm run embed    # rebuild the RAG vector index from data/corpus/ (lesson 8+)
-npm run eval     # run the eval suite (lesson 4+)
+npm run dev
 ```
 
-The first time you start a lesson that introduces a new service, the relevant lesson notes will tell you when to use these commands.
+---
 
-## Using the lessons
+# ⚙️ Tech Stack
 
-Recommended flow:
+- React
+- TypeScript
+- Excalidraw
+- Cloudflare Agents
+- Cloudflare Workers
+- Vercel AI SDK
+- OpenAI GPT Models
+- Zod
 
-1. **Watch / read the lesson talk first.** The notes have a theory section at the top.
-2. **Live-code along.** The notes contain the full code for every change in fenced code blocks. You can copy / paste if you fall behind.
-3. **Run it.** Each lesson has a clear "this is what success looks like" moment — a working chat, an eval score, a new tool call in the trace.
-4. **Move to the next branch when you're ready.** `git checkout lesson-N+1`.
+---
 
-If you get stuck, the next branch contains the previous lesson's solution. So if lesson 5 isn't compiling for you, `git checkout lesson-6`, look at the working state, then go back to lesson-5 and figure out the diff.
+# 🤖 How It Works
 
-## Tech stack
+1. User sends a prompt.
 
-- **Runtime**: Node + Cloudflare Workers (local via `wrangler dev`, no deployment needed)
-- **Frontend**: Vite + React + Excalidraw
-- **Agent**: AI SDK + Cloudflare Agents SDK (Durable Objects, `useAgentChat`)
-- **Vector store**: Upstash Vector (lesson 8+)
-- **Evals**: Braintrust (lesson 4+)
-- **Web search**: Tavily (lesson 7+)
+2. The AI decides whether it needs to:
 
-Everything runs locally. No deployment, no production cloud infrastructure.
+- read the canvas
+- add elements
+- modify elements
+- delete elements
 
-## Getting help
+3. The browser executes the tool.
 
-- The lesson notes have full code blocks, so any time you're stuck, the answer is probably in the next branch's notes.
-- Issues with the course material → open a GitHub issue.
+4. Excalidraw updates instantly.
+
+5. The AI continues the conversation.
+
+---
+
+# 🧠 Example Agent Flow
+
+```text
+User
+ │
+ ▼
+"Make the API green."
+
+        ▼
+
+AI
+ │
+ ├── queryCanvas()
+ │
+ ▼
+Canvas Summary
+
+ │
+ ▼
+
+AI
+ │
+ ├── updateElements()
+ │
+ ▼
+
+Browser updates Excalidraw
+
+ │
+ ▼
+
+```
+
+---
+
+
+- Multi-agent workflows
+
+---
+
+---
+
+---
+
+<div align="center">
+
+Made with ❤️ using
+
+**Cloudflare Agents • Vercel AI SDK • React • Excalidraw**
+
+</div>
